@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QMessageBox
 from ui.login_form import Ui_MainWindow
 from api.graphql_client import GraphQLClient
-from MainWindow import MainWindow  # Assuming this is the main GUI class
+from MainWindow import MainWindow
 from enviorment.env import ENV
 
 

@@ -16,7 +16,7 @@ class ENV:
     def __init__(self):
         self.token = None
         self.user_data = {}
-        self.graphQLClient = GraphQLClient()  # Initialize your GraphQL client
+        self.graphQLClient = GraphQLClient()
         self.load_session()
 
     def set_user_data(self, user_data, token):
@@ -50,25 +50,22 @@ class ENV:
                         self.token = session_data['token']
                         print(f"Session loaded from {temp_file_path}")
                     elif datetime.now() < expires_at:
-                        # Token is valid but close to expiring, attempt to refresh it
                         print("Token is close to expiration, attempting to refresh...")
-                        graphql_client = GraphQLClient.instance()  # Assuming a singleton pattern
+                        graphql_client = GraphQLClient.instance()
                         new_token = graphql_client.refresh_token(self.token)
                         if new_token:
-                            self.set_user_data(session_data['user_data'], new_token)  # This also saves the new session
+                            self.set_user_data(session_data['user_data'], new_token)
                             print("Token refreshed successfully.")
                         else:
                             print("Token refresh failed, please log in again.")
                             os.remove(temp_file_path)
                     else:
-                        # Session expired
                         print("Session expired, please log in again.")
                         os.remove(temp_file_path)
         except Exception as e:
             print(f"Error loading session: {e}")
 
     def clear_session(self):
-        # Clear user data and token, delete temp file
         self.user_data = {}
         self.token = None
         temp_file_path = os.path.join(tempfile.gettempdir(), "user_session.json")

@@ -3,13 +3,13 @@ from PySide6.QtCore import Qt, Signal
 
 
 class CommandLineEdit(QLineEdit):
-    tabPressed = Signal()  # Custom signal to indicate a tab was pressed
+    tabPressed = Signal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Tab:
-            self.tabPressed.emit()  # Emit signal when Tab is pressed
+            self.tabPressed.emit()
         else:
-            super().keyPressEvent(event)  # Handle other key presses normally
+            super().keyPressEvent(event)

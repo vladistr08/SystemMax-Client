@@ -84,10 +84,7 @@ class GraphQLClient:
             print(f"Error refreshing token: {errors}")
             return None
 
-        # Initialize new_token as None
         new_token = None
-
-        # Check if 'refreshToken' and 'token' keys exist in the data dictionary
         if 'refreshToken' in data and 'token' in data['refreshToken']:
             new_token = data['refreshToken']['token']
 
