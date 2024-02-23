@@ -2,9 +2,7 @@ import os
 import subprocess
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextBrowser, QCompleter
 from PySide6.QtCore import Slot
-
-from command_line_edit import CommandLineEdit
-
+from components.command_line_edit import CommandLineEdit
 
 class TerminalWidget(QWidget):
     def __init__(self, parent=None):
