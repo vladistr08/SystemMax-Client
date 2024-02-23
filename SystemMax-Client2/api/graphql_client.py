@@ -2,9 +2,18 @@ import requests
 from typing import Tuple
 
 class GraphQLClient:
+    _instance = None
+
     def __init__(self, endpoint: str = 'http://localhost:9330/graphql'):
         self.endpoint = endpoint
         self.headers = {"Content-Type": "application/json"}
+
+    def __new__(cls, endpoint: str = 'http://localhost:9330/graphql'):
+        if cls._instance is None:
+            cls._instance = super(GraphQLClient, cls).__new__(cls)
+            cls._instance.endpoint = endpoint
+            cls._instance.headers = {"Content-Type": "application/json"}
+        return cls._instance
 
     def execute(self, query: str, variables: dict = None) -> Tuple[dict, dict]:
         try:
@@ -59,5 +68,29 @@ class GraphQLClient:
         if errors or 'version' not in data:
             return False
         return True
+
+    def refresh_token(self, token: str) -> str:
+        query = """
+        query refresh {
+            refreshToken(input: {token: "%s"}) {
+                token
+            }
+        }
+        """ % token
+
+        data, errors = self.execute(query)
+
+        if errors:
+            print(f"Error refreshing token: {errors}")
+            return None
+
+        # Initialize new_token as None
+        new_token = None
+
+        # Check if 'refreshToken' and 'token' keys exist in the data dictionary
+        if 'refreshToken' in data and 'token' in data['refreshToken']:
+            new_token = data['refreshToken']['token']
+
+        return new_token
 
     # Methods for updateUser, logoutUser, getUser, and getAssistantResponse can be similarly defined
