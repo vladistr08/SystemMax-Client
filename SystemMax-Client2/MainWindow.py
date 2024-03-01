@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QMainWindow, QMessageBox
 from ui.gui import Ui_MainWindow
 from components.terminal_widget import TerminalWidget
 from enviorment.env import ENV
+from components.chat_widget import ChatWidget
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -11,6 +12,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.initUI()
         self.initTerminalWidget()
+        self.initChatWidget()
 
     def initUI(self):
         self.actionLogout.triggered.connect(self.logout)
@@ -19,6 +21,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def initTerminalWidget(self):
         self.terminalWidget = TerminalWidget(self)
         self.terminalLayout.addWidget(self.terminalWidget)
+
+    def initChatWidget(self):
+        self.chatWidget = ChatWidget(self)
+        self.chatLayout.addWidget(self.chatWidget)
 
     def viewProfile(self):
         from ProfileWindow import ProfileWindow

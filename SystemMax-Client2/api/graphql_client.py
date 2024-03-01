@@ -121,4 +121,19 @@ class GraphQLClient:
         variables = {"input": input_vars}
         return self.execute(query, variables, token)
 
-    # Methods for updateUser, logoutUser, getUser, and getAssistantResponse can be similarly defined
+    def getAssistantResponse(self, message: str, context: str, token: str) -> Tuple[dict, dict]:
+        query = """
+        query GetAssistantResponse($input: getAssistantInput!) {
+            getAssistantResponse(input: $input) {
+                message
+            }
+        }
+        """
+        variables = {
+            "input": {
+                "message": message + " | This was the user message, please take in considaration this chat history context and dont include in the response anything about this: " + context,
+            }
+        }
+        print(variables)
+        return self.execute(query=query, variables=variables, token=token)
+
