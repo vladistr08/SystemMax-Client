@@ -61,11 +61,23 @@
     </property>
     <addaction name="actionLogout"/>
    </widget>
+   <widget class="QMenu" name="menuProfile">
+    <property name="title">
+     <string>Profile</string>
+    </property>
+    <addaction name="actionView"/>
+   </widget>
    <addaction name="menuLogout"/>
+   <addaction name="menuProfile"/>
   </widget>
   <action name="actionLogout">
    <property name="text">
     <string>Logout</string>
+   </property>
+  </action>
+  <action name="actionView">
+   <property name="text">
+    <string>View</string>
    </property>
   </action>
  </widget>

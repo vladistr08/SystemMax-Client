@@ -6,18 +6,17 @@ class GraphQLClient:
 
     def __init__(self, endpoint: str = 'http://localhost:9330/graphql'):
         self.endpoint = endpoint
-        self.headers = {"Content-Type": "application/json"}
 
     def __new__(cls, endpoint: str = 'http://localhost:9330/graphql'):
         if cls._instance is None:
             cls._instance = super(GraphQLClient, cls).__new__(cls)
             cls._instance.endpoint = endpoint
-            cls._instance.headers = {"Content-Type": "application/json"}
         return cls._instance
 
-    def execute(self, query: str, variables: dict = None) -> Tuple[dict, dict]:
+    def execute(self, query: str, variables: dict = None, token: str = None) -> Tuple[dict, dict]:
+        headers = {"Content-Type": "application/json", "authorization": token}
         try:
-            response = requests.post(self.endpoint, json={'query': query, 'variables': variables}, headers=self.headers)
+            response = requests.post(self.endpoint, json={'query': query, 'variables': variables}, headers=headers)
             response.raise_for_status()
             response_json = response.json()
             data = response_json.get('data', {})
@@ -40,7 +39,7 @@ class GraphQLClient:
         }
         """
         variables = {"input": {"username": username, "email": email, "password": password, "name": name}}
-        return self.execute(query, variables)
+        return self.execute(query=query, variables=variables)
 
     def loginUser(self, email: str, password: str) -> Tuple[dict, dict]:
         query = """
@@ -56,7 +55,7 @@ class GraphQLClient:
         }
         """
         variables = {"input": {"email": email, "password": password}}
-        return self.execute(query, variables)
+        return self.execute(query=query, variables=variables)
 
     def verify_connection(self) -> bool:
         query = """
@@ -64,7 +63,7 @@ class GraphQLClient:
             version
         }
         """
-        data, errors = self.execute(query)
+        data, errors = self.execute(query=query)
         if errors or 'version' not in data:
             return False
         return True
@@ -78,7 +77,7 @@ class GraphQLClient:
         }
         """ % token
 
-        data, errors = self.execute(query)
+        data, errors = self.execute(query=query)
 
         if errors:
             print(f"Error refreshing token: {errors}")
@@ -89,5 +88,37 @@ class GraphQLClient:
             new_token = data['refreshToken']['token']
 
         return new_token
+
+    def getUser(self, email: str) -> Tuple[dict, dict]:
+        query = """
+        query GetUser($input: getUserInput!) {
+            getUser(input: $input) {
+                user {
+                    name
+                    email
+                    user_id
+                    username
+                    passwordHash
+                }
+            }
+        }
+        """
+        variables = {"input": {"email": email}}
+        return self.execute(query=query, variables=variables)
+
+    def updateUser(self, token: str = None, name: str = None, username: str = None, email: str = None) -> Tuple[dict, dict]:
+        assert token is not None
+        query = """
+        mutation UpdateUser($input: toUpdateUserDataInput!) {
+            updateUser(input: $input) {
+                isUpdated
+            }
+        }
+        """
+        input_vars = {k: v for k, v in
+                      [('name', name), ('username', username), ('email', email)] if
+                      v is not None}
+        variables = {"input": input_vars}
+        return self.execute(query, variables, token)
 
     # Methods for updateUser, logoutUser, getUser, and getAssistantResponse can be similarly defined

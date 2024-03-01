@@ -27,6 +27,8 @@ class Ui_MainWindow(object):
         MainWindow.resize(1400, 860)
         self.actionLogout = QAction(MainWindow)
         self.actionLogout.setObjectName(u"actionLogout")
+        self.actionView = QAction(MainWindow)
+        self.actionView.setObjectName(u"actionView")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.label = QLabel(self.centralwidget)
@@ -49,10 +51,14 @@ class Ui_MainWindow(object):
         self.menuBar.setGeometry(QRect(0, 0, 1400, 37))
         self.menuLogout = QMenu(self.menuBar)
         self.menuLogout.setObjectName(u"menuLogout")
+        self.menuProfile = QMenu(self.menuBar)
+        self.menuProfile.setObjectName(u"menuProfile")
         MainWindow.setMenuBar(self.menuBar)
 
         self.menuBar.addAction(self.menuLogout.menuAction())
+        self.menuBar.addAction(self.menuProfile.menuAction())
         self.menuLogout.addAction(self.actionLogout)
+        self.menuProfile.addAction(self.actionView)
 
         self.retranslateUi(MainWindow)
 
@@ -62,7 +68,9 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.actionLogout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
+        self.actionView.setText(QCoreApplication.translate("MainWindow", u"View", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Native OS terminal - SystemMax CP", None))
         self.menuLogout.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
+        self.menuProfile.setTitle(QCoreApplication.translate("MainWindow", u"Profile", None))
     # retranslateUi
 
