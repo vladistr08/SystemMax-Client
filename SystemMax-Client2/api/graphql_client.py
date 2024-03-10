@@ -1,5 +1,6 @@
 import requests
-from typing import Tuple
+from typing import Tuple, List, Dict
+
 
 class GraphQLClient:
     _instance = None
@@ -24,6 +25,34 @@ class GraphQLClient:
             return data, errors
         except requests.exceptions.RequestException as e:
             return {}, {"networkError": str(e)}
+
+    def getMessages(self, chatId: str, token: str) -> List[Dict[str, str]]:
+        query = """
+        query GetMessages($chatId: String!) {
+            getUserChat(input: {chatId: $chatId}) {
+                items {
+                    message
+                    messageId
+                    messageIndex
+                }
+            }
+        }
+        """
+        variables = {"chatId": chatId}
+        data, errors = self.execute(query=query, variables=variables, token=token)
+        if errors:
+            print(f"Error retrieving messages: {errors}")
+            return []
+        items = data.get("getUserChat", {}).get("items", [])
+        messages = []
+        for item in items:
+            message_data = {
+                "message": item.get("message", ""),
+                "messageId": item.get("messageId", ""),
+                "messageIndex": item.get("messageIndex", "")
+            }
+            messages.append(message_data)
+        return messages
 
     def createUser(self, username: str, email: str, password: str, name: str) -> Tuple[dict, dict]:
         query = """

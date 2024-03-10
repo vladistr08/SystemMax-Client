@@ -4,14 +4,27 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPu
 from PySide6.QtCore import Slot, Qt
 from enviorment.env import ENV
 from api.graphql_client import GraphQLClient
+from typing import List, Dict
 
 class ChatWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, messages: List[Dict[str, str]], parent=None):
         super(ChatWidget, self).__init__(parent)
         self.env = ENV()
         self.graphQLClient = GraphQLClient()
         self.setupUi()
         self.chat_history = []
+
+        if len(messages) != 0:
+            self.messages_sorted = sorted(messages, key=lambda x: int(x.get('messageIndex', 0)))  # Sort messages by messageIndex
+            if self.messages_sorted:
+                for message in self.messages_sorted:
+                    display = ""
+                    if int(message.get("messageIndex", 0)) % 2 == 0:
+                        display = self.env.user_data["username"] + ": "
+                    else:
+                        display = "Assistant: "
+                    display += message.get("message", "")
+                    self.add_message_to_display(message=display)
 
     def setupUi(self):
         # Main layout

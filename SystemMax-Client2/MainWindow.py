@@ -3,12 +3,15 @@ from ui.gui import Ui_MainWindow
 from components.terminal_widget import TerminalWidget
 from enviorment.env import ENV
 from components.chat_widget import ChatWidget
+from api.graphql_client import GraphQLClient
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.chatWidget = None
         self.profile_window = None
         self.login_window = None
+        self.graphql_client = GraphQLClient()
         self.setupUi(self)
         self.initUI()
         self.initTerminalWidget()
@@ -23,7 +26,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.terminalLayout.addWidget(self.terminalWidget)
 
     def initChatWidget(self):
-        self.chatWidget = ChatWidget(self)
+        env = ENV()
+        token = env.token
+        messages = self.graphql_client.getMessages(chatId="b36052ad-1b47-4786-be05-2faa278ef81d", token=token)
+        self.chatWidget = ChatWidget(messages, self)
         self.chatLayout.addWidget(self.chatWidget)
 
     def viewProfile(self):
