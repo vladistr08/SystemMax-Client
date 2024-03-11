@@ -26,34 +26,6 @@ class GraphQLClient:
         except requests.exceptions.RequestException as e:
             return {}, {"networkError": str(e)}
 
-    def getMessages(self, chatId: str, token: str) -> List[Dict[str, str]]:
-        query = """
-        query GetMessages($chatId: String!) {
-            getUserChat(input: {chatId: $chatId}) {
-                items {
-                    message
-                    messageId
-                    messageIndex
-                }
-            }
-        }
-        """
-        variables = {"chatId": chatId}
-        data, errors = self.execute(query=query, variables=variables, token=token)
-        if errors:
-            print(f"Error retrieving messages: {errors}")
-            return []
-        items = data.get("getUserChat", {}).get("items", [])
-        messages = []
-        for item in items:
-            message_data = {
-                "message": item.get("message", ""),
-                "messageId": item.get("messageId", ""),
-                "messageIndex": item.get("messageIndex", "")
-            }
-            messages.append(message_data)
-        return messages
-
     def createUser(self, username: str, email: str, password: str, name: str) -> Tuple[dict, dict]:
         query = """
         mutation CreateUser($input: createUserInput!) {
@@ -163,6 +135,88 @@ class GraphQLClient:
                 "message": message + " | This was the user message, please take in considaration this chat history context and dont include in the response anything about this: " + context,
             }
         }
-        print(variables)
         return self.execute(query=query, variables=variables, token=token)
+
+    def createChat(self, chatName: str, token: str) -> Tuple[dict, dict]:
+        mutation = """
+        mutation CreateChat($input: CreateChatInput!) {
+            createChat(input: $input) {
+                chatId
+                isCreated
+            }
+        }
+        """
+        variables = {"input": {"chatName": chatName}}
+        return self.execute(query=mutation, variables=variables, token=token)
+
+    def deleteChat(self, chatId: str, token: str) -> Tuple[dict, dict]:
+        mutation = """
+        mutation DeleteChat($input: DeleteChatInput!) {
+            removeChat(input: $input) {
+                isRemoved
+            }
+        }
+        """
+        variables = {"input": {"chatId": chatId}}
+        return self.execute(query=mutation, variables=variables, token=token)
+
+    def getChats(self, token: str) -> List[Dict[str, str]]:
+        query = """
+        query GetChats {
+            getUserChatRecords {
+                items {
+                    chatId
+                    chatName
+                    createdAt
+                }
+            }
+        }
+        """
+        data, errors = self.execute(query=query, token=token)
+        if errors:
+            print(f"Error retrieving chats: {errors}")
+            return []
+
+        # Extracting the items array from the response
+        items = data.get("getUserChatRecords", {}).get("items", [])
+
+        # Simplify the chat records if needed or directly return items
+        chats = []
+        for item in items:
+            chat_record = {
+                "chatId": item.get("chatId", ""),
+                "chatName": item.get("chatName", ""),
+                "createdAt": item.get("createdAt", "")
+            }
+            chats.append(chat_record)
+
+        return chats
+
+    def getMessages(self, chatId: str, token: str) -> List[Dict[str, str]]:
+        query = """
+        query GetMessages($chatId: String!) {
+            getUserMessages(input: {chatId: $chatId}) {
+                items {
+                    message
+                    chatId
+                    messageIndex
+                }
+            }
+        }
+        """
+        variables = {"chatId": chatId}
+        data, errors = self.execute(query=query, variables=variables, token=token)
+        if errors:
+            print(f"Error retrieving messages: {errors}")
+            return []
+        items = data.get("getUserMessages", {}).get("items", [])
+        messages = []
+        for item in items:
+            message_data = {
+                "message": item.get("message", ""),
+                "chatId": item.get("chatId", ""),
+                "messageIndex": item.get("messageIndex", "")
+            }
+            messages.append(message_data)
+        return messages
 
