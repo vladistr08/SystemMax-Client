@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame,
-                               QPushButton, QInputDialog, QSizePolicy, QSpacerItem, QScrollArea, QLineEdit)
+                               QPushButton, QInputDialog, QSizePolicy, QSpacerItem, QScrollArea, QLineEdit, QMessageBox)
 from PySide6.QtCore import Signal, Qt
 from typing import List, Dict
-
+from api.graphql_client import GraphQLClient
 from enviorment.env import ENV
 
 
@@ -13,6 +13,7 @@ class ChatSearchWidget(QWidget):
 
     def __init__(self, chats: List[Dict[str, str]], parent=None):
         super(ChatSearchWidget, self).__init__(parent)
+        self.graphQLClient = None
         self.chats = chats
         self.setupUi()
 
@@ -59,14 +60,14 @@ class ChatSearchWidget(QWidget):
         frameLayout.setContentsMargins(5, 5, 5, 5)
         frameLayout.setSpacing(0)
 
-        self.chatNameEdit = QLineEdit(chat["chatName"])
-        self.chatNameEdit.setStyleSheet("color: white; font-size: 16px; background: dark-green; border: none;")
-        self.chatNameEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.chatNameEdit.editingFinished.connect(
-            lambda: self.onChatNameEditFinished(chat["chatId"], self.chatNameEdit))
+        chatNameEdit = QLineEdit(chat["chatName"])
+        chatNameEdit.setStyleSheet("color: white; font-size: 16px; background: dark-green; border: none;")
+        chatNameEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        chatNameEdit.editingFinished.connect(
+            lambda: self.onChatNameEditFinished(chat["chatId"], chatNameEdit))
 
         timestampLabel = QLabel(chat["createdAt"])
-        timestampLabel.setStyleSheet("color: white; font-size: 14px;")  # Increased font size
+        timestampLabel.setStyleSheet("color: pink; font-size: 14px;")  # Increased font size
         timestampLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         deleteButton = QPushButton("Delete")
@@ -75,7 +76,7 @@ class ChatSearchWidget(QWidget):
         deleteButton.setMaximumWidth(70)  # Set a maximum width for the button
         deleteButton.clicked.connect(lambda: self.onDeleteButtonClicked(chat["chatId"]))
 
-        frameLayout.addWidget(self.chatNameEdit)
+        frameLayout.addWidget(chatNameEdit)
         frameLayout.addWidget(timestampLabel)
         frameLayout.addStretch()  # This will push the delete button to the right
         frameLayout.addWidget(deleteButton)
@@ -85,9 +86,14 @@ class ChatSearchWidget(QWidget):
         layout.addWidget(frame)
 
     def updateChatNameInDb(self, chatId, newChatName):
-        print("update chat in db for me!!!!!!!!!!!!!!!!!!!!!")
-        pass
-        # TODO update db
+        self.graphQLClient = GraphQLClient()
+        env = ENV()
+        token = env.token
+        data, errors = self.graphQLClient.updateChat(chatId, chatName=newChatName, token=token)
+        if errors:
+            QMessageBox.critical(self, "Error", f"Failed to delete chat: {errors}")
+        else:
+            print("Update succesfully")
 
     def onChatNameEditFinished(self, chatId, chatNameEdit):
         newChatName = chatNameEdit.text()

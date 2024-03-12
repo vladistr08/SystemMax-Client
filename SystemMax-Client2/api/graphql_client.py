@@ -162,6 +162,17 @@ class GraphQLClient:
         variables = {"input": {"chatId": chatId}}
         return self.execute(query=mutation, variables=variables, token=token)
 
+    def updateChat(self, chatId: str, chatName: str, token: str) -> Tuple[dict, dict]:
+        mutation = """
+        mutation UpdateChat($input: updateChatInput!) {
+            updateChat(input: $input) {
+                isUpdated
+            }
+        }
+        """
+        variables = {"input": {"chatId": chatId, "chatName": chatName}}
+        return self.execute(query=mutation, variables=variables, token=token)
+
     def getChats(self, token: str) -> List[Dict[str, str]]:
         query = """
         query GetChats {
