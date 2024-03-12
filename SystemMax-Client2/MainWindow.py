@@ -23,7 +23,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.stackedWidget = QStackedWidget(self)  # Create a QStackedWidget
         self.initChatSearchWidget()
-        self.chatWidget = ChatWidget([], self)  # Initially empty
+        self.chatWidget = ChatWidget("", [], self)  # Initially empty
 
         self.stackedWidget.addWidget(self.chatSearchWidget)
         self.stackedWidget.addWidget(self.chatWidget)  # Add widgets to the stack
@@ -50,9 +50,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         token = env.token
         result, errors = self.graphql_client.deleteChat(chatId, token)
         if errors:
-            QMessageBox.critical(self, "Error", f"Failed to create chat: {errors}")
+            QMessageBox.critical(self, "Error", f"Failed to delete chat: {errors}")
         else:
-            QMessageBox.information(self, "Success", f"Chat '{chatId}' created successfully.")
+            QMessageBox.information(self, "Success", f"Chat '{chatId}' deleted successfully.")
             self.refreshChatList()
 
     def createChat(self, chatName):
@@ -78,9 +78,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.stackedWidget.addWidget(self.chatSearchWidget)  # Add to stacked widget if not already added
         self.chatSearchWidget.chatSelected.connect(self.openChat)
 
-    def initChatWidget(self, chat):
+    def initChatWidget(self, chatId, chat):
         messages = self.fetchMessagesForChat(chat["chatId"])
-        self.chatWidget = ChatWidget(messages, self)
+        self.chatWidget = ChatWidget(chatId, messages, self)
         self.stackedWidget.addWidget(self.chatWidget)
         self.chatWidget.backToSearch.connect(self.switchToChatSearch)  # Connect the signal to switch back
         self.stackedWidget.setCurrentWidget(self.chatWidget)
@@ -110,8 +110,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.login_window.show()
         self.close()
 
-    def openChat(self, chat):
-        self.initChatWidget(chat) # Switch to chat widget
+    def openChat(self, chatId, chat):
+        self.initChatWidget(chatId, chat) # Switch to chat widget
 
     def fetchMessagesForChat(self, chatId):
         env = ENV()

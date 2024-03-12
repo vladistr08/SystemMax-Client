@@ -10,12 +10,13 @@ from typing import List, Dict
 class ChatWidget(QWidget):
     backToSearch = Signal()  # Signal to notify when to switch back to the chat search widget
 
-    def __init__(self, messages: List[Dict[str, str]], parent=None):
+    def __init__(self, chatId, messages: List[Dict[str, str]], parent=None):
         super(ChatWidget, self).__init__(parent)
         self.env = ENV()
         self.graphQLClient = GraphQLClient()
         self.setupUi()
         self.chat_history = []
+        self.chatId = chatId
 
         if len(messages) != 0:
             self.messages_sorted = sorted(messages,
@@ -154,7 +155,7 @@ class ChatWidget(QWidget):
         self.chatDisplayArea.verticalScrollBar().setValue(self.chatDisplayArea.verticalScrollBar().maximum())
 
     def get_chatgpt_response(self, user_message, context) -> str:
-        data, errors = self.graphQLClient.getAssistantResponse(user_message, context, self.env.token)
+        data, errors = self.graphQLClient.getAssistantResponse(user_message, chatId=self.chatId, context=context, token=self.env.token)
         if errors:
             QMessageBox.critical(self, "Error", f"An error occurred: {errors}")
             return f"An error occurred: {errors}"

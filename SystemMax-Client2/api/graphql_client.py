@@ -123,7 +123,7 @@ class GraphQLClient:
         variables = {"input": input_vars}
         return self.execute(query, variables, token)
 
-    def getAssistantResponse(self, message: str, context: str, token: str) -> Tuple[dict, dict]:
+    def getAssistantResponse(self, message: str, chatId: str, context: str, token: str) -> Tuple[dict, dict]:
         query = """
         query GetAssistantResponse($input: getAssistantInput!) {
             getAssistantResponse(input: $input) {
@@ -133,15 +133,15 @@ class GraphQLClient:
         """
         variables = {
             "input": {
-                "message": message + " | This was the user message, please take in considaration this chat history context and dont include in the response anything about this: " + context,
+                "chatId": chatId,
+                "message": message,
             }
         }
         return self.execute(query=query, variables=variables, token=token)
 
     def createChat(self, chatName: str, token: str) -> Tuple[dict, dict]:
-        print(token)
         mutation = """
-        mutation createChat($input: CreateChatInput!) {
+        mutation CreateChat($input: createChatInput!) {
             createChat(input: $input) {
                 chatId
                 isCreated
@@ -153,7 +153,7 @@ class GraphQLClient:
 
     def deleteChat(self, chatId: str, token: str) -> Tuple[dict, dict]:
         mutation = """
-        mutation DeleteChat($input: DeleteChatInput!) {
+        mutation RemoveChat($input: removeChatInput!) {
             removeChat(input: $input) {
                 isRemoved
             }
