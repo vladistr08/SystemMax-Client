@@ -1,12 +1,15 @@
 from PySide6.QtGui import QTextOption
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPushButton,
                                QScrollArea, QLabel, QLineEdit, QMessageBox, QSizePolicy)
-from PySide6.QtCore import Slot, Qt
+from PySide6.QtCore import Slot, Qt, Signal
 from enviorment.env import ENV
 from api.graphql_client import GraphQLClient
 from typing import List, Dict
 
+
 class ChatWidget(QWidget):
+    backToSearch = Signal()  # Signal to notify when to switch back to the chat search widget
+
     def __init__(self, messages: List[Dict[str, str]], parent=None):
         super(ChatWidget, self).__init__(parent)
         self.env = ENV()
@@ -15,7 +18,8 @@ class ChatWidget(QWidget):
         self.chat_history = []
 
         if len(messages) != 0:
-            self.messages_sorted = sorted(messages, key=lambda x: int(x.get('messageIndex', 0)))  # Sort messages by messageIndex
+            self.messages_sorted = sorted(messages,
+                                          key=lambda x: int(x.get('messageIndex', 0)))  # Sort messages by messageIndex
             if self.messages_sorted:
                 for message in self.messages_sorted:
                     display = ""
@@ -25,6 +29,30 @@ class ChatWidget(QWidget):
                         display = "Assistant: "
                     display += message.get("message", "")
                     self.add_message_to_display(message=display)
+
+    def updateMessages(self, messages: List[Dict[str, str]]):
+        # Clear the existing messages from the display
+        for i in reversed(range(self.chatDisplayLayout.count())):
+            widgetToRemove = self.chatDisplayLayout.itemAt(i).widget()
+            if widgetToRemove is not None:
+                self.chatDisplayLayout.removeWidget(widgetToRemove)
+                widgetToRemove.deleteLater()
+
+        # Assuming messages are sorted or you will sort them as needed
+        self.messages_sorted = sorted(messages, key=lambda x: int(x.get('messageIndex', 0)))
+
+        # Repopulate the chat display with the updated list of messages
+        for message in self.messages_sorted:
+            display = ""
+            if int(message.get("messageIndex", 0)) % 2 == 0:
+                display = self.env.user_data["username"] + ": "
+            else:
+                display = "Assistant: "
+            display += message.get("message", "")
+            self.add_message_to_display(message=display)
+
+        # Scroll to the bottom to ensure the latest message is visible
+        self.chatDisplayArea.verticalScrollBar().setValue(self.chatDisplayArea.verticalScrollBar().maximum())
 
     def setupUi(self):
         # Main layout
@@ -57,6 +85,9 @@ class ChatWidget(QWidget):
         buttonLayout = QHBoxLayout()
         buttonLayout.addWidget(self.saveChatButton)
         buttonLayout.addWidget(self.startNewChatButton)
+        self.backButton = QPushButton("Back", self)
+        self.backButton.clicked.connect(self.on_back_clicked)
+        mainLayout.addWidget(self.backButton)
 
         mainLayout.addLayout(inputLayout)
         mainLayout.addLayout(buttonLayout)
@@ -129,3 +160,7 @@ class ChatWidget(QWidget):
             return f"An error occurred: {errors}"
         else:
             return data['getAssistantResponse']['message']
+
+    @Slot()
+    def on_back_clicked(self):
+        self.backToSearch.emit()

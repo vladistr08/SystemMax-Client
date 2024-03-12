@@ -16,6 +16,7 @@ class GraphQLClient:
 
     def execute(self, query: str, variables: dict = None, token: str = None) -> Tuple[dict, dict]:
         headers = {"Content-Type": "application/json", "authorization": token}
+        print({'query': query, 'variables': variables})
         try:
             response = requests.post(self.endpoint, json={'query': query, 'variables': variables}, headers=headers)
             response.raise_for_status()
@@ -138,8 +139,9 @@ class GraphQLClient:
         return self.execute(query=query, variables=variables, token=token)
 
     def createChat(self, chatName: str, token: str) -> Tuple[dict, dict]:
+        print(token)
         mutation = """
-        mutation CreateChat($input: CreateChatInput!) {
+        mutation createChat($input: CreateChatInput!) {
             createChat(input: $input) {
                 chatId
                 isCreated
