@@ -1,12 +1,14 @@
 import os
 import subprocess
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QTextBrowser, QCompleter
-from PySide6.QtCore import Slot
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QCompleter
+from PySide6.QtCore import Slot, Qt
 from components.command_line_edit import CommandLineEdit
+from ansi2html import Ansi2HTMLConverter
 
 class TerminalWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.converter = Ansi2HTMLConverter(inline=True)  # Create an instance of Ansi2HTMLConverter
         self.lineEdit = None
         self.textBrowser = None
         self.layout = None
@@ -14,7 +16,16 @@ class TerminalWidget(QWidget):
         self.workingDir = os.getcwd()
 
     def initUI(self):
-        commands = ['cd', 'ls', 'mkdir', 'rm', 'clear', 'touch']
+        commands = [
+            'cd', 'ls', 'mkdir', 'rm', 'clear', 'touch', 'cp', 'mv', 'echo', 'cat',
+            'grep', 'find', 'chmod', 'chown', 'export', 'unset', 'env', 'history',
+            'kill', 'curl', 'wget', 'tar', 'gzip', 'gunzip', 'zip', 'unzip', 'ssh',
+            'scp', 'rsync', 'git', 'npm', 'yarn', 'pip', 'conda', 'awk', 'sed',
+            'sort', 'uniq', 'df', 'du', 'free', 'top', 'htop', 'nano', 'vim', 'emacs',
+            'tail', 'head', 'less', 'more', 'ping', 'traceroute', 'netstat', 'ifconfig',
+            'systemctl', 'journalctl', 'docker', 'kubectl', 'ansible', 'make', 'gcc',
+            'g++', 'python', 'python3', 'java', 'javac', 'ruby', 'perl', 'php'
+        ]
 
         self.layout = QVBoxLayout(self)
         self.textBrowser = QTextBrowser(self)
@@ -25,13 +36,17 @@ class TerminalWidget(QWidget):
 
         self.lineEdit.returnPressed.connect(self.onReturnPressed)
         self.lineEdit.tabPressed.connect(self.onTabPressed)
+        self.lineEdit.rightArrowPressed.connect(self.onRightArrowPressed)
 
         completer = QCompleter(commands)
+        completer.setCompletionMode(QCompleter.PopupCompletion)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+
         self.lineEdit.setCompleter(completer)
         self.updatePrompt()
 
     def updatePrompt(self):
-        self.textBrowser.append(f"{os.getcwd()} $")
+        self.textBrowser.append(f"<p style='color: pink;'>{os.getcwd()}<span style='color: white;'>$</span></p>")
 
     @Slot()
     def onReturnPressed(self):
@@ -48,20 +63,55 @@ class TerminalWidget(QWidget):
                 os.chdir(cmd.split(maxsplit=1)[1])
                 self.workingDir = os.getcwd()
             except Exception as e:
-                self.textBrowser.append(str(e))
+                self.textBrowser.append(f"<span style='color: red;'>{str(e)}</span>")
         else:
             try:
                 result = subprocess.check_output(cmd, shell=True, cwd=self.workingDir, text=True,
                                                  stderr=subprocess.STDOUT)
-                self.textBrowser.append(result)
+                # Convert ANSI to HTML
+                html_result = self.converter.convert(result, full=True, ensure_trailing_newline=True)
+                self.textBrowser.append(html_result)
             except subprocess.CalledProcessError as e:
-                self.textBrowser.append(e.output)
+                # Convert error output (ANSI to HTML) before appending
+                html_error = self.converter.convert(e.output, full=False)
+                self.textBrowser.append(f"<p style='color: red;'>{html_error}</p>")
         self.updatePrompt()
 
     @Slot()
     def onTabPressed(self):
-        commands = ['cd', 'ls', 'mkdir', 'rm', 'clear', 'touch']
-        currentText = self.lineEdit.text()
-        suggestions = [cmd for cmd in commands if cmd.startswith(currentText)]
-        if suggestions:
-            self.lineEdit.setText(suggestions[0] + ' ')
+        currentText = self.lineEdit.text().strip()
+        parts = currentText.split()
+        lastWord = parts[-1] if parts else ''
+
+        # Initial commands plus current directory items if a path command is detected
+        commands = [
+            'cd', 'ls', 'mkdir', 'rm', 'clear', 'touch', 'cp', 'mv', 'echo', 'cat',
+            'grep', 'find', 'chmod', 'chown', 'export', 'unset', 'env', 'history',
+            'kill', 'curl', 'wget', 'tar', 'gzip', 'gunzip', 'zip', 'unzip', 'ssh',
+            'scp', 'rsync', 'git', 'npm', 'yarn', 'pip', 'conda', 'awk', 'sed',
+            'sort', 'uniq', 'df', 'du', 'free', 'top', 'htop', 'nano', 'vim', 'emacs',
+            'tail', 'head', 'less', 'more', 'ping', 'traceroute', 'netstat', 'ifconfig',
+            'systemctl', 'journalctl', 'docker', 'kubectl', 'ansible', 'make', 'gcc',
+            'g++', 'python', 'python3', 'java', 'javac', 'ruby', 'perl', 'php'
+        ]
+
+        # Determine if the last word is a path command or part of a path
+        path_commands = ['cd', 'ls', 'mkdir', 'rm', 'touch', 'cp', 'mv', 'cat', 'grep', 'find']
+        file_commands = []
+        if parts and parts[0] in path_commands:
+            try:
+                dirList = os.listdir(self.workingDir)
+                file_commands += dirList  # Append directory contents to the commands list
+            except Exception as e:
+                print(f"Error accessing directory contents: {e}")
+
+        # Update the completer with the new commands list
+        completer = QCompleter(commands if len(file_commands) == 0 else file_commands)
+        completer.setCompletionMode(QCompleter.PopupCompletion)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.lineEdit.setCompleter(completer)
+        self.lineEdit.completer().complete()
+
+    @Slot()
+    def onRightArrowPressed(self):
+        self.onTabPressed()
