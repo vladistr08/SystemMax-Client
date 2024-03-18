@@ -24,7 +24,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1400, 788)
+        MainWindow.resize(1400, 819)
+        MainWindow.setStyleSheet(u"background-color: #332941;")
         self.actionLogout = QAction(MainWindow)
         self.actionLogout.setObjectName(u"actionLogout")
         self.actionView = QAction(MainWindow)
@@ -33,24 +34,36 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(190, 10, 651, 30))
-        self.label.setStyleSheet(u"font-size:30px")
+        self.label.setGeometry(QRect(210, 10, 531, 51))
+        self.label.setStyleSheet(u"font: 24pt \"Fira Code\";\n"
+"background-color: #070F2B;\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
         self.horizontalLayoutWidget = QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
-        self.horizontalLayoutWidget.setGeometry(QRect(50, 50, 911, 641))
+        self.horizontalLayoutWidget.setGeometry(QRect(50, 80, 911, 661))
         self.terminalLayout = QHBoxLayout(self.horizontalLayoutWidget)
         self.terminalLayout.setObjectName(u"terminalLayout")
         self.terminalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayoutWidget = QWidget(self.centralwidget)
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.verticalLayoutWidget.setGeometry(QRect(980, 50, 391, 641))
+        self.verticalLayoutWidget.setGeometry(QRect(980, 80, 391, 661))
         self.chatLayout = QVBoxLayout(self.verticalLayoutWidget)
         self.chatLayout.setObjectName(u"chatLayout")
         self.chatLayout.setContentsMargins(0, 0, 0, 0)
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(1000, 10, 651, 30))
-        self.label_2.setStyleSheet(u"font-size:30px")
+        self.label_2.setGeometry(QRect(990, 10, 371, 51))
+        self.label_2.setStyleSheet(u"font: 24pt \"Fira Code\";\n"
+"background-color: #070F2B;\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")

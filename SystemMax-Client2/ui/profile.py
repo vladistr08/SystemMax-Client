@@ -25,40 +25,57 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(909, 656)
+        MainWindow.setStyleSheet(u"background-color: #332941;")
         self.actionLogout = QAction(MainWindow)
         self.actionLogout.setObjectName(u"actionLogout")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(270, 190, 71, 16))
+        self.label_2.setGeometry(QRect(240, 140, 111, 20))
+        self.label_2.setStyleSheet(u"font: 300 18pt \"Fira Code\";")
         self.label_3 = QLabel(self.centralwidget)
         self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(270, 220, 58, 16))
+        self.label_3.setGeometry(QRect(280, 180, 81, 20))
+        self.label_3.setStyleSheet(u"font: 300 18pt \"Fira Code\";")
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(270, 250, 58, 16))
+        self.label_4.setGeometry(QRect(270, 230, 71, 20))
+        self.label_4.setStyleSheet(u"font: 300 18pt \"Fira Code\";")
         self.usernameLineEdit = QLineEdit(self.centralwidget)
         self.usernameLineEdit.setObjectName(u"usernameLineEdit")
-        self.usernameLineEdit.setGeometry(QRect(340, 190, 211, 21))
+        self.usernameLineEdit.setGeometry(QRect(350, 130, 211, 31))
         self.nameLineEdit = QLineEdit(self.centralwidget)
         self.nameLineEdit.setObjectName(u"nameLineEdit")
-        self.nameLineEdit.setGeometry(QRect(340, 220, 211, 21))
+        self.nameLineEdit.setGeometry(QRect(350, 180, 211, 31))
         self.emailLineEdit = QLineEdit(self.centralwidget)
         self.emailLineEdit.setObjectName(u"emailLineEdit")
-        self.emailLineEdit.setGeometry(QRect(340, 250, 211, 21))
+        self.emailLineEdit.setGeometry(QRect(350, 230, 211, 31))
         self.updateButton = QPushButton(self.centralwidget)
         self.updateButton.setObjectName(u"updateButton")
-        self.updateButton.setGeometry(QRect(340, 290, 100, 32))
+        self.updateButton.setGeometry(QRect(350, 290, 100, 32))
+        self.updateButton.setStyleSheet(u"  border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    padding: 6px;\n"
+"background-color: #070F2B;")
         self.cancelButton = QPushButton(self.centralwidget)
         self.cancelButton.setObjectName(u"cancelButton")
-        self.cancelButton.setGeometry(QRect(450, 290, 100, 32))
+        self.cancelButton.setGeometry(QRect(460, 290, 100, 32))
+        self.cancelButton.setStyleSheet(u"  border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    padding: 6px;\n"
+"background-color: #070F2B;")
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(340, 90, 211, 41))
-        self.label.setStyleSheet(u"\n"
-"font-size: 36px\n"
-"")
+        self.label.setGeometry(QRect(350, 30, 211, 41))
+        self.label.setStyleSheet(u"  border-style: outset;\n"
+"font: 24pt \"Fira Code\";\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    padding: 6px;\n"
+"background-color: #070F2B;")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")

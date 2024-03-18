@@ -13,15 +13,21 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #332941;</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>190</y>
-      <width>71</width>
-      <height>16</height>
+      <x>240</x>
+      <y>140</y>
+      <width>111</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>Username:</string>
@@ -30,11 +36,14 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>220</y>
-      <width>58</width>
-      <height>16</height>
+      <x>280</x>
+      <y>180</y>
+      <width>81</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>Name:</string>
@@ -44,10 +53,13 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>250</y>
-      <width>58</width>
-      <height>16</height>
+      <y>230</y>
+      <width>71</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>EMail:</string>
@@ -56,41 +68,48 @@
    <widget class="QLineEdit" name="usernameLineEdit">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>190</y>
+      <x>350</x>
+      <y>130</y>
       <width>211</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="nameLineEdit">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>220</y>
+      <x>350</x>
+      <y>180</y>
       <width>211</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="emailLineEdit">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>250</y>
+      <x>350</x>
+      <y>230</y>
       <width>211</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="updateButton">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>350</x>
       <y>290</y>
       <width>100</width>
       <height>32</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>Update</string>
@@ -99,11 +118,18 @@
    <widget class="QPushButton" name="cancelButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>460</x>
       <y>290</y>
       <width>100</width>
       <height>32</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>Cancel</string>
@@ -112,16 +138,19 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>90</y>
+      <x>350</x>
+      <y>30</y>
       <width>211</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
-font-size: 36px
-</string>
+     <string notr="true">  border-style: outset;
+font: 24pt &quot;Fira Code&quot;;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>User Profile</string>

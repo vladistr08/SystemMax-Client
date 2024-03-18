@@ -13,15 +13,25 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #332941;</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="registerButton">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>270</y>
-      <width>100</width>
-      <height>32</height>
+      <x>340</x>
+      <y>300</y>
+      <width>111</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>Register</string>
@@ -30,11 +40,18 @@
    <widget class="QPushButton" name="goToLoginButton">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>270</y>
-      <width>100</width>
-      <height>32</height>
+      <x>340</x>
+      <y>360</y>
+      <width>111</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>Back to Login</string>
@@ -43,40 +60,40 @@
    <widget class="QLineEdit" name="usernameLineEdit">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>120</y>
+      <x>270</x>
+      <y>110</y>
       <width>261</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="nameLineEdit">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>270</x>
       <y>160</y>
       <width>261</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="emailLineEdit">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>270</x>
       <y>200</y>
       <width>261</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QLineEdit" name="passwordLineEdit">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>270</x>
       <y>240</y>
       <width>261</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="inputMask">
@@ -89,11 +106,19 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>80</y>
-      <width>261</width>
-      <height>16</height>
+      <x>160</x>
+      <y>10</y>
+      <width>451</width>
+      <height>71</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  border-style: outset;
+font: 24pt &quot;Fira Code&quot;;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+background-color: #070F2B;</string>
     </property>
     <property name="text">
      <string>Please register to SystemMax!</string>
@@ -102,11 +127,14 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>160</x>
       <y>120</y>
-      <width>58</width>
+      <width>101</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>username:</string>
@@ -115,11 +143,14 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>160</y>
+      <x>200</x>
+      <y>170</y>
       <width>58</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>name:</string>
@@ -129,10 +160,13 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>200</y>
-      <width>58</width>
+      <y>210</y>
+      <width>71</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>email:</string>
@@ -141,11 +175,14 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>240</y>
-      <width>58</width>
+      <x>160</x>
+      <y>250</y>
+      <width>101</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>password:</string>
@@ -154,8 +191,8 @@
    <widget class="QLabel" name="serverStatusLabel">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>320</y>
+      <x>10</x>
+      <y>510</y>
       <width>121</width>
       <height>16</height>
      </rect>

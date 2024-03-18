@@ -24,6 +24,7 @@ class ChatSearchWidget(QWidget):
 
         # Create a scroll area for the chat cards
         self.scrollArea = QScrollArea(self)
+        self.scrollArea.setStyleSheet("background-color: #222839")
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Disable horizontal scroll
 
@@ -44,6 +45,8 @@ class ChatSearchWidget(QWidget):
 
         # Create the 'Create Chat' button
         self.createButton = QPushButton("Create Chat")
+        self.createButton.setStyleSheet("background-color: #070F2B;border-style: outset;border-width: "
+                                        "2px;border-radius: 10px; padding: 6px; font: 300 20pt \"Fira Code\";")
         self.createButton.clicked.connect(self.onCreateButtonClicked)
 
         # Add the button to the main layout, centered at the bottom
@@ -52,34 +55,50 @@ class ChatSearchWidget(QWidget):
     def addChatCard(self, chat, layout):
         frame = QFrame()
         frame.setFrameShape(QFrame.StyledPanel)
-        frame.setStyleSheet("background-color: black;")
+        frame.setStyleSheet("background-color: #222831;")
         frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         frame.setMinimumHeight(60)  # Adjust this value as needed
 
-        frameLayout = QHBoxLayout(frame)  # Changed to QHBoxLayout
-        frameLayout.setContentsMargins(5, 5, 5, 5)
-        frameLayout.setSpacing(0)
+        # Use QVBoxLayout as the main layout for the frame
+        mainFrameLayout = QVBoxLayout(frame)
+        #mainFrameLayout.setContentsMargins(5, 5, 5, 5)
+        mainFrameLayout.setSpacing(0)
+
+        # Create a QHBoxLayout for the chatNameEdit and deleteButton
+        topLayout = QHBoxLayout()
+        topLayout.setSpacing(10)  # Adjust spacing as needed
 
         chatNameEdit = QLineEdit(chat["chatName"])
-        chatNameEdit.setStyleSheet("color: white; font-size: 16px; background: dark-green; border: none;")
+        chatNameEdit.setStyleSheet("color: white; font-size: 16px; background: #070F2B;  border-style: "
+                                   "outset;border-width: 2px;border-radius: 10px; margin: 4px; padding: 5px; width: "
+                                   "10em; height: 2em; font: 300 18pt \"Fira Code\";")
         chatNameEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         chatNameEdit.editingFinished.connect(
             lambda: self.onChatNameEditFinished(chat["chatId"], chatNameEdit))
 
-        timestampLabel = QLabel(chat["createdAt"])
-        timestampLabel.setStyleSheet("color: pink; font-size: 14px;")  # Increased font size
-        timestampLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-
         deleteButton = QPushButton("Delete")
-        deleteButton.setStyleSheet("color: white; background-color: red;")  # Made the button red
+        deleteButton.setStyleSheet("color: white; background-color: #A0153E;border-style: "
+                                   "outset;border-width: 1px;border-radius: 10px; margin: 4px; padding: 5px; "
+                                   " height: 2em; font: 300 12pt \"Fira Code\";")
         deleteButton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        deleteButton.setMaximumWidth(70)  # Set a maximum width for the button
+        deleteButton.setMaximumWidth(70)
         deleteButton.clicked.connect(lambda: self.onDeleteButtonClicked(chat["chatId"]))
 
-        frameLayout.addWidget(chatNameEdit)
-        frameLayout.addWidget(timestampLabel)
-        frameLayout.addStretch()  # This will push the delete button to the right
-        frameLayout.addWidget(deleteButton)
+        # Add chatNameEdit and deleteButton to the topLayout
+        topLayout.addWidget(chatNameEdit)
+        topLayout.addStretch()  # This will push the delete button to the right
+        topLayout.addWidget(deleteButton)
+
+        # Add the topLayout to the mainFrameLayout
+        mainFrameLayout.addLayout(topLayout)
+
+        timestampLabel = QLabel(chat["createdAt"])
+        timestampLabel.setStyleSheet("color: #A0153E; font-size: 14px;font: 300 14pt \"Fira Code\";")
+        timestampLabel.setAlignment(Qt.AlignCenter)  # Align the label in the center
+        timestampLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        # Add timestampLabel directly below the topLayout in the mainFrameLayout
+        mainFrameLayout.addWidget(timestampLabel)
 
         frame.mousePressEvent = lambda event: self.onChatCardClicked(chatId=chat.get("chatId", ""), chat=chat)
 

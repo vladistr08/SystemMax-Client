@@ -61,6 +61,7 @@ class ChatWidget(QWidget):
 
         # Chat display area
         self.chatDisplayArea = QScrollArea()
+        self.chatDisplayArea.setStyleSheet("background-color: #222831;")
         self.chatDisplayArea.setWidgetResizable(True)
         self.chatDisplayWidget = QWidget()
         self.chatDisplayLayout = QVBoxLayout(self.chatDisplayWidget)
@@ -69,14 +70,13 @@ class ChatWidget(QWidget):
 
         # Text input and send button
         self.textInput = QLineEdit(self)
+        self.textInput.setStyleSheet("background-color: #222831;")
         self.sendButton = QPushButton("Send", self)
+        self.sendButton.setStyleSheet("background-color: #070F2B;border-style: outset;border-width: "
+                                      "2px;border-radius: 10px;padding: 6px; font: 300 14pt \"Fira Code\";")
         self.sendButton.clicked.connect(self.on_send_clicked)
 
         # Save and start new chat buttons
-        self.saveChatButton = QPushButton("Save Chat", self)
-        self.startNewChatButton = QPushButton("Start New Chat", self)
-        self.saveChatButton.clicked.connect(self.on_save_chat_clicked)
-        self.startNewChatButton.clicked.connect(self.on_start_new_chat_clicked)
 
         # Layout for input and buttons
         inputLayout = QHBoxLayout()
@@ -84,9 +84,9 @@ class ChatWidget(QWidget):
         inputLayout.addWidget(self.sendButton)
 
         buttonLayout = QHBoxLayout()
-        buttonLayout.addWidget(self.saveChatButton)
-        buttonLayout.addWidget(self.startNewChatButton)
         self.backButton = QPushButton("Back", self)
+        self.backButton.setStyleSheet("background-color: #070F2B;border-style: outset;border-width: 2px; "
+                                      "border-radius: 10px;padding: 6px;font: 300 18pt \"Fira Code\";")
         self.backButton.clicked.connect(self.on_back_clicked)
         mainLayout.addWidget(self.backButton)
 
@@ -108,23 +108,12 @@ class ChatWidget(QWidget):
         chatgpt_response = self.get_chatgpt_response(user_message, context)
         self.add_message_to_display("Assistant: " + chatgpt_response)
 
-    @Slot()
-    def on_save_chat_clicked(self):
-        # TODO: Implement logic to save the chat to the backend
-        pass
-
-    @Slot()
-    def on_start_new_chat_clicked(self):
-        for i in reversed(range(self.chatDisplayLayout.count())):
-            widgetToRemove = self.chatDisplayLayout.itemAt(i).widget()
-            self.chatDisplayLayout.removeWidget(widgetToRemove)
-            widgetToRemove.setParent(None)
 
     def add_message_to_display(self, message):
         label, _, text = message.partition(": ")
 
         # Determine the message label color based on the sender
-        label_html = f"<span style='color: #720455;'>{label}:</span>" if label == "Assistant" else f"<span style='color: green;'>{label}:</span>"
+        label_html = f"<span style='color: #720455;'>{label}:</span>" if label == "Assistant" else f"<span style='color: green;font: 300 14pt \"Fira Code\";'>{label}:</span>"
 
         # Prepare the full message with HTML for styling
         full_message = f"{label_html} {text}"
@@ -135,7 +124,7 @@ class ChatWidget(QWidget):
         message_text_edit.setHtml(
             f"<div style='background-color:#191919; color:#EFECEC; padding:5px;'>{full_message}</div>")
         message_text_edit.setStyleSheet(
-            "QTextEdit { background-color: #191919; color: #EFECEC; font-family: 'Fira Code'; border: none; }")
+            "QTextEdit { background-color: #191919; color: #EFECEC; font: 300 14pt \"Fira Code\"; border: none; }")
         message_text_edit.setTextInteractionFlags(Qt.TextSelectableByMouse)
         message_text_edit.setFocusPolicy(Qt.NoFocus)
 

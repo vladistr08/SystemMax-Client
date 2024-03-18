@@ -6,6 +6,16 @@ from components.command_line_edit import CommandLineEdit
 from ansi2html import Ansi2HTMLConverter
 
 class TerminalWidget(QWidget):
+    commands = [
+        'cd', 'ls', 'mkdir', 'rm', 'clear', 'touch', 'cp', 'mv', 'echo', 'cat',
+        'grep', 'find', 'chmod', 'chown', 'export', 'unset', 'env', 'history',
+        'kill', 'curl', 'wget', 'tar', 'gzip', 'gunzip', 'zip', 'unzip', 'ssh',
+        'scp', 'rsync', 'git', 'npm', 'yarn', 'pip', 'conda', 'awk', 'sed',
+        'sort', 'uniq', 'df', 'du', 'free', 'top', 'htop', 'nano', 'vim', 'emacs',
+        'tail', 'head', 'less', 'more', 'ping', 'traceroute', 'netstat', 'ifconfig',
+        'systemctl', 'journalctl', 'docker', 'kubectl', 'ansible', 'make', 'gcc',
+        'g++', 'python', 'python3', 'java', 'javac', 'ruby', 'perl', 'php'
+    ]
     def __init__(self, parent=None):
         super().__init__(parent)
         self.converter = Ansi2HTMLConverter(inline=True)  # Create an instance of Ansi2HTMLConverter
@@ -16,20 +26,12 @@ class TerminalWidget(QWidget):
         self.workingDir = os.getcwd()
 
     def initUI(self):
-        commands = [
-            'cd', 'ls', 'mkdir', 'rm', 'clear', 'touch', 'cp', 'mv', 'echo', 'cat',
-            'grep', 'find', 'chmod', 'chown', 'export', 'unset', 'env', 'history',
-            'kill', 'curl', 'wget', 'tar', 'gzip', 'gunzip', 'zip', 'unzip', 'ssh',
-            'scp', 'rsync', 'git', 'npm', 'yarn', 'pip', 'conda', 'awk', 'sed',
-            'sort', 'uniq', 'df', 'du', 'free', 'top', 'htop', 'nano', 'vim', 'emacs',
-            'tail', 'head', 'less', 'more', 'ping', 'traceroute', 'netstat', 'ifconfig',
-            'systemctl', 'journalctl', 'docker', 'kubectl', 'ansible', 'make', 'gcc',
-            'g++', 'python', 'python3', 'java', 'javac', 'ruby', 'perl', 'php'
-        ]
 
         self.layout = QVBoxLayout(self)
         self.textBrowser = QTextBrowser(self)
+        self.textBrowser.setStyleSheet("background-color: #222831; font: 300 14pt \"Fira Code\";")
         self.lineEdit = CommandLineEdit(self)
+        self.lineEdit.setStyleSheet("background-color: #222831;")
 
         self.layout.addWidget(self.textBrowser)
         self.layout.addWidget(self.lineEdit)
@@ -38,7 +40,7 @@ class TerminalWidget(QWidget):
         self.lineEdit.tabPressed.connect(self.onTabPressed)
         self.lineEdit.rightArrowPressed.connect(self.onRightArrowPressed)
 
-        completer = QCompleter(commands)
+        completer = QCompleter(self.commands)
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
 
@@ -81,19 +83,6 @@ class TerminalWidget(QWidget):
     def onTabPressed(self):
         currentText = self.lineEdit.text().strip()
         parts = currentText.split()
-        lastWord = parts[-1] if parts else ''
-
-        # Initial commands plus current directory items if a path command is detected
-        commands = [
-            'cd', 'ls', 'mkdir', 'rm', 'clear', 'touch', 'cp', 'mv', 'echo', 'cat',
-            'grep', 'find', 'chmod', 'chown', 'export', 'unset', 'env', 'history',
-            'kill', 'curl', 'wget', 'tar', 'gzip', 'gunzip', 'zip', 'unzip', 'ssh',
-            'scp', 'rsync', 'git', 'npm', 'yarn', 'pip', 'conda', 'awk', 'sed',
-            'sort', 'uniq', 'df', 'du', 'free', 'top', 'htop', 'nano', 'vim', 'emacs',
-            'tail', 'head', 'less', 'more', 'ping', 'traceroute', 'netstat', 'ifconfig',
-            'systemctl', 'journalctl', 'docker', 'kubectl', 'ansible', 'make', 'gcc',
-            'g++', 'python', 'python3', 'java', 'javac', 'ruby', 'perl', 'php'
-        ]
 
         # Determine if the last word is a path command or part of a path
         path_commands = ['cd', 'ls', 'mkdir', 'rm', 'touch', 'cp', 'mv', 'cat', 'grep', 'find']
@@ -106,7 +95,7 @@ class TerminalWidget(QWidget):
                 print(f"Error accessing directory contents: {e}")
 
         # Update the completer with the new commands list
-        completer = QCompleter(commands if len(file_commands) == 0 else file_commands)
+        completer = QCompleter(currentText + ' ' + self.commands if len(file_commands) == 0 else file_commands)
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.lineEdit.setCompleter(completer)

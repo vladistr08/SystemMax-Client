@@ -13,15 +13,26 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #332941;</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>130</y>
-      <width>100</width>
-      <height>32</height>
+      <x>380</x>
+      <y>220</y>
+      <width>101</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #070F2B;
+   border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;
+</string>
     </property>
     <property name="text">
      <string>Login</string>
@@ -30,11 +41,18 @@
    <widget class="QPushButton" name="goToRegisterButton">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>130</y>
-      <width>100</width>
-      <height>32</height>
+      <x>380</x>
+      <y>290</y>
+      <width>101</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #070F2B;
+  border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 6px;</string>
     </property>
     <property name="text">
      <string>Register</string>
@@ -43,21 +61,27 @@
    <widget class="QLineEdit" name="emailLineEdit">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>60</y>
+      <x>300</x>
+      <y>130</y>
       <width>261</width>
-      <height>21</height>
+      <height>30</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 14pt &quot;Fira Code&quot;;</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="passwordLineEdit">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>90</y>
+      <x>300</x>
+      <y>170</y>
       <width>261</width>
-      <height>21</height>
+      <height>30</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 14pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="echoMode">
      <enum>QLineEdit::Password</enum>
@@ -66,11 +90,20 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>160</x>
       <y>20</y>
-      <width>231</width>
-      <height>20</height>
+      <width>531</width>
+      <height>81</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 24pt &quot;Fira Code&quot;;
+background-color: #070F2B;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    min-width: 10em;
+    padding: 6px;</string>
     </property>
     <property name="text">
      <string>Welcome to SystemMax! Please Login</string>
@@ -79,11 +112,14 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>60</y>
-      <width>58</width>
-      <height>16</height>
+      <x>220</x>
+      <y>140</y>
+      <width>71</width>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>email:</string>
@@ -92,11 +128,14 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>90</y>
-      <width>58</width>
+      <x>190</x>
+      <y>180</y>
+      <width>101</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 18pt &quot;Fira Code&quot;;</string>
     </property>
     <property name="text">
      <string>password:</string>
@@ -105,8 +144,8 @@
    <widget class="QLabel" name="serverStatusLabel">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>180</y>
+      <x>10</x>
+      <y>510</y>
       <width>171</width>
       <height>16</height>
      </rect>
