@@ -1,6 +1,7 @@
 from typing import List, Dict
 
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QStackedWidget
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QTabWidget, QToolBar, QInputDialog
 
 from components.chat_search import ChatSearchWidget
 from ui.gui import Ui_MainWindow
@@ -19,7 +20,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.graphql_client = GraphQLClient()
         self.setupUi(self)  # Assuming this is where you set up the main window layout
         self.initUI()
-        self.initTerminalWidget()
 
         self.stackedWidget = QStackedWidget(self)  # Create a QStackedWidget
         self.initChatSearchWidget()
@@ -32,6 +32,47 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.chatSearchWidget.chatSelected.connect(self.openChat)
         self.chatSearchWidget.createChat.connect(self.createChat)
         self.chatSearchWidget.chatDeleted.connect(self.deleteChat)
+
+        # Initialize terminal tab widget and add it to terminalLayout
+        self.initTerminalTabWidget()
+
+
+    def initTerminalTabWidget(self):
+        self.actionAdd_Terminal.triggered.connect(self.addTab)
+        self.tabWidget = QTabWidget()
+        self.tabWidget.setTabsClosable(True)
+        self.tabWidget.setStyleSheet("background-color: #070F2B;")
+        self.tabWidget.tabCloseRequested.connect(self.closeTab)
+
+        # Assuming terminalLayout is a QVBoxLayout
+        self.terminalLayout.addWidget(self.tabWidget)  # Add the tab widget to the terminal layout
+
+        # Add an initial terminal tab
+        self.addTab()
+
+        # Connect the actionStop to terminate the current process in the active terminal tab
+        self.actionStop.triggered.connect(lambda: self.getCurrentTerminalWidget().terminateCurrentProcess())
+
+    def addTab(self):
+        terminalWidget = TerminalWidget(self)
+        if self.tabWidget.count() != 0:
+            terminalName, ok = QInputDialog.getText(self, "Create Terminal", "Enter terminal name:")
+        else:
+            terminalName, ok = "Terminal", True
+        if ok and terminalName:
+            tabIndex = self.tabWidget.addTab(terminalWidget, terminalName)
+            self.tabWidget.setCurrentIndex(tabIndex)
+
+    def closeTab(self, index):
+        widgetToRemove = self.tabWidget.widget(index)
+        widgetToRemove.terminateCurrentProcess()
+        if widgetToRemove is not None:
+            widgetToRemove.deleteLater()
+        self.tabWidget.removeTab(index)
+
+    def getCurrentTerminalWidget(self):
+        # Returns the currently active TerminalWidget instance
+        return self.tabWidget.currentWidget()
 
     def updateChats(self, updated_chats: List[Dict[str, str]]):
         self.chats = updated_chats

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: #332941;</string>
+   <string notr="true">background-color: #122839;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="registerButton">
@@ -61,7 +61,7 @@ background-color: #070F2B;</string>
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>110</y>
+      <y>120</y>
       <width>261</width>
       <height>31</height>
      </rect>
@@ -128,7 +128,7 @@ background-color: #070F2B;</string>
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>120</y>
+      <y>130</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -192,8 +192,8 @@ background-color: #070F2B;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>510</y>
-      <width>121</width>
+      <y>540</y>
+      <width>171</width>
       <height>16</height>
      </rect>
     </property>

@@ -6,23 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1400</width>
-    <height>819</height>
+    <width>1434</width>
+    <height>829</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: #332941;</string>
+   <string notr="true">background-color: #122839;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>10</y>
-      <width>531</width>
+      <x>220</x>
+      <y>20</y>
+      <width>521</width>
       <height>51</height>
      </rect>
     </property>
@@ -42,10 +42,10 @@ background-color: #070F2B;
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>80</y>
-      <width>911</width>
-      <height>661</height>
+      <x>20</x>
+      <y>90</y>
+      <width>951</width>
+      <height>681</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="terminalLayout"/>
@@ -54,9 +54,9 @@ background-color: #070F2B;
     <property name="geometry">
      <rect>
       <x>980</x>
-      <y>80</y>
+      <y>100</y>
       <width>391</width>
-      <height>661</height>
+      <height>681</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="chatLayout"/>
@@ -65,7 +65,7 @@ background-color: #070F2B;
     <property name="geometry">
      <rect>
       <x>990</x>
-      <y>10</y>
+      <y>20</y>
       <width>371</width>
       <height>51</height>
      </rect>
@@ -93,7 +93,7 @@ background-color: #070F2B;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1400</width>
+     <width>1434</width>
      <height>37</height>
     </rect>
    </property>
@@ -101,6 +101,7 @@ background-color: #070F2B;
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionAdd_Terminal"/>
     <addaction name="actionLogout"/>
    </widget>
    <widget class="QMenu" name="menuProfile">
@@ -132,6 +133,11 @@ background-color: #070F2B;
   <action name="actionStop">
    <property name="text">
     <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionAdd_Terminal">
+   <property name="text">
+    <string>Add Terminal</string>
    </property>
   </action>
  </widget>

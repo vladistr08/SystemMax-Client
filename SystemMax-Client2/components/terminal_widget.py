@@ -95,7 +95,8 @@ class TerminalWidget(QWidget):
         self.updatePrompt()
 
     def terminateCurrentProcess(self):
-        self.commandRunner.terminate()
-        self.textBrowser.append("<p style='color: red;'>Command terminated.</p>")
+        if hasattr(self, "commandRunner"):
+            self.commandRunner.terminate()
+            self.textBrowser.append("<p style='color: red;'>Command terminated.</p>")
     def updatePrompt(self):
         self.textBrowser.append(f"<p style='color: pink;'>{os.getcwd()}<span style='color: white;'>$</span></p>")

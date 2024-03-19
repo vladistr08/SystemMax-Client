@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(909, 656)
-        MainWindow.setStyleSheet(u"background-color: #332941;")
+        MainWindow.setStyleSheet(u"background-color: #122839;")
         self.actionLogout = QAction(MainWindow)
         self.actionLogout.setObjectName(u"actionLogout")
         self.centralwidget = QWidget(MainWindow)

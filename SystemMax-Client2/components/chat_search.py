@@ -24,7 +24,7 @@ class ChatSearchWidget(QWidget):
 
         # Create a scroll area for the chat cards
         self.scrollArea = QScrollArea(self)
-        self.scrollArea.setStyleSheet("background-color: #222839")
+        self.scrollArea.setStyleSheet("background-color: #070F2B")
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Disable horizontal scroll
 

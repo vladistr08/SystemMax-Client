@@ -61,7 +61,7 @@ class ChatWidget(QWidget):
 
         # Chat display area
         self.chatDisplayArea = QScrollArea()
-        self.chatDisplayArea.setStyleSheet("background-color: #222831;")
+        self.chatDisplayArea.setStyleSheet("background-color: #070F2B;")
         self.chatDisplayArea.setWidgetResizable(True)
         self.chatDisplayWidget = QWidget()
         self.chatDisplayLayout = QVBoxLayout(self.chatDisplayWidget)

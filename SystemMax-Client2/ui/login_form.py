@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
-        MainWindow.setStyleSheet(u"background-color: #332941;")
+        MainWindow.setStyleSheet(u"background-color: #122839;")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.loginButton = QPushButton(self.centralwidget)
@@ -73,7 +73,7 @@ class Ui_MainWindow(object):
         self.label_3.setStyleSheet(u"font: 300 18pt \"Fira Code\";")
         self.serverStatusLabel = QLabel(self.centralwidget)
         self.serverStatusLabel.setObjectName(u"serverStatusLabel")
-        self.serverStatusLabel.setGeometry(QRect(10, 510, 171, 16))
+        self.serverStatusLabel.setGeometry(QRect(10, 540, 181, 16))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
