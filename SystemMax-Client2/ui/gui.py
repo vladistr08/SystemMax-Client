@@ -30,6 +30,8 @@ class Ui_MainWindow(object):
         self.actionLogout.setObjectName(u"actionLogout")
         self.actionView = QAction(MainWindow)
         self.actionView.setObjectName(u"actionView")
+        self.actionStop = QAction(MainWindow)
+        self.actionStop.setObjectName(u"actionStop")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.label = QLabel(self.centralwidget)
@@ -76,12 +78,16 @@ class Ui_MainWindow(object):
         self.menuLogout.setObjectName(u"menuLogout")
         self.menuProfile = QMenu(self.menuBar)
         self.menuProfile.setObjectName(u"menuProfile")
+        self.menuProcess = QMenu(self.menuBar)
+        self.menuProcess.setObjectName(u"menuProcess")
         MainWindow.setMenuBar(self.menuBar)
 
         self.menuBar.addAction(self.menuLogout.menuAction())
         self.menuBar.addAction(self.menuProfile.menuAction())
+        self.menuBar.addAction(self.menuProcess.menuAction())
         self.menuLogout.addAction(self.actionLogout)
         self.menuProfile.addAction(self.actionView)
+        self.menuProcess.addAction(self.actionStop)
 
         self.retranslateUi(MainWindow)
 
@@ -92,9 +98,11 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.actionLogout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
         self.actionView.setText(QCoreApplication.translate("MainWindow", u"View", None))
+        self.actionStop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Native OS terminal - SystemMax CP", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Chat with out Assistent", None))
         self.menuLogout.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuProfile.setTitle(QCoreApplication.translate("MainWindow", u"Profile", None))
+        self.menuProcess.setTitle(QCoreApplication.translate("MainWindow", u"Process", None))
     # retranslateUi
 

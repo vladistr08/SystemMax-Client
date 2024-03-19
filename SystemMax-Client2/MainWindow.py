@@ -91,6 +91,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def initTerminalWidget(self):
         self.terminalWidget = TerminalWidget(self)
+        self.actionStop.triggered.connect(self.terminalWidget.terminateCurrentProcess)
         self.terminalLayout.addWidget(self.terminalWidget)
 
     def viewProfile(self):

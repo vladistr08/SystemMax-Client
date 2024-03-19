@@ -109,8 +109,15 @@ background-color: #070F2B;
     </property>
     <addaction name="actionView"/>
    </widget>
+   <widget class="QMenu" name="menuProcess">
+    <property name="title">
+     <string>Process</string>
+    </property>
+    <addaction name="actionStop"/>
+   </widget>
    <addaction name="menuLogout"/>
    <addaction name="menuProfile"/>
+   <addaction name="menuProcess"/>
   </widget>
   <action name="actionLogout">
    <property name="text">
@@ -120,6 +127,11 @@ background-color: #070F2B;
   <action name="actionView">
    <property name="text">
     <string>View</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>Stop</string>
    </property>
   </action>
  </widget>

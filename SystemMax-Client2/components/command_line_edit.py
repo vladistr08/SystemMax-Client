@@ -5,12 +5,15 @@ from PySide6.QtCore import Qt, Signal
 class CommandLineEdit(QLineEdit):
     tabPressed = Signal()
     rightArrowPressed = Signal()
+    ctrlCPressed = Signal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Right:
+        if event.key() == Qt.Key_C and (event.modifiers() & Qt.ControlModifier):
+            self.ctrlCPressed.emit()
+        elif event.key() == Qt.Key_Right:
             # Emit signal or directly call a method to handle right arrow press
             self.rightArrowPressed.emit()
         elif event.key() == Qt.Key_Tab:
