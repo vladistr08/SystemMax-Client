@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject, QThread, Signal, QProcess
+from PySide6.QtCore import QProcess, QObject, Signal
 
 
 class CommandRunner(QObject):
@@ -10,38 +10,41 @@ class CommandRunner(QObject):
         super().__init__()
         self.command = command
         self.cwd = cwd
-
-    def run(self):
         self.process = QProcess()
         self.process.setProcessChannelMode(QProcess.MergedChannels)
         self.process.setWorkingDirectory(self.cwd)
 
-        # Connect signals for asynchronous I/O
         self.process.readyReadStandardOutput.connect(self.handleStandardOutput)
         self.process.readyReadStandardError.connect(self.handleStandardError)
         self.process.finished.connect(self.handleFinished)
 
-        # Execute the command
+    def run(self):
         commandParts = self.command.split(" ")
         self.process.start(commandParts[0], commandParts[1:])
 
     def handleStandardOutput(self):
-        if self.process:
-            data = self.process.readAllStandardOutput().data().decode()
-            self.output.emit(data)
+        data = self.process.readAllStandardOutput().data().decode()
+        self.output.emit(data)
 
     def handleStandardError(self):
-        if self.process:
-            data = self.process.readAllStandardError().data().decode()
-            if data:
-                self.error.emit(data)
+        data = self.process.readAllStandardError().data().decode()
+        if data:
+            self.error.emit(data)
 
-    def handleFinished(self, exitCode, exitStatus):
-        # Optionally, emit any final messages or perform cleanup
+    def handleFinished(self):
         self.finished.emit()
+        self.cleanup()
 
     def terminate(self):
-        if self.process and self.process.state() == QProcess.Running:
-            self.process.kill()
-            self.finished.emit()
+        if self.process.state() == QProcess.Running:
+            self.process.terminate()
+            self.cleanup()
+            if not self.process.waitForFinished(3000):  # Wait for 3 seconds
+                self.process.kill()  # Force kill if not terminated
 
+
+    def cleanup(self):
+        if self.process.state() != QProcess.NotRunning:
+            self.process.waitForFinished()
+
+        self.process.close()

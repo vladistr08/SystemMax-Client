@@ -1,12 +1,10 @@
 import os
-
-from PySide6.QtGui import QShortcut, QKeySequence
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QCompleter
-from PySide6.QtCore import Slot, Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, Signal, QObject, QProcess, QTimer
 from components.command_line_edit import CommandLineEdit
 from ansi2html import Ansi2HTMLConverter
 
-from workers.command_execution import CommandRunner
+from workers.process_thread import ProcessThread
 
 
 class TerminalWidget(QWidget):
@@ -27,28 +25,28 @@ class TerminalWidget(QWidget):
         super().__init__(parent)
         self.converter = Ansi2HTMLConverter(inline=True)
         self.lineEdit = CommandLineEdit(self)
+        self.lineEdit.ctrlCPressed.connect(self.terminateCurrentProcess)
         self.textBrowser = QTextBrowser(self)
         self.layout = QVBoxLayout(self)
         self.workingDir = os.getcwd()
-        self.stopShortcut = QShortcut(QKeySequence("Control+C"), self)
-        self.stopShortcut.activated.connect(self.terminateCurrentProcess)
         self.initUI()
+        self.processThread = None
+        self.currentThread = None
 
     def initUI(self):
-        self.textBrowser.setStyleSheet("background-color: #222831; font: 300 14pt 'Fira Code';")
-        self.lineEdit.setStyleSheet("background-color: #222831;")
+        self.textBrowser.setStyleSheet("background-color: #222831; font: 300 14pt 'Fira Code'; color: white;")
+        self.lineEdit.setStyleSheet("background-color: #333; color: white;")
         self.layout.addWidget(self.textBrowser)
         self.layout.addWidget(self.lineEdit)
         self.lineEdit.returnPressed.connect(self.onReturnPressed)
 
-        completer = QCompleter(self.commands)
+        completer = QCompleter(self.commands, self)
         completer.setCompletionMode(QCompleter.PopupCompletion)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.lineEdit.setCompleter(completer)
 
         self.updatePrompt()
 
-    @Slot()
     def onReturnPressed(self):
         cmd = self.lineEdit.text().strip()
         self.lineEdit.clear()
@@ -60,43 +58,66 @@ class TerminalWidget(QWidget):
             try:
                 os.chdir(cmd.split(maxsplit=1)[1])
                 self.workingDir = os.getcwd()
+                self.updatePrompt()
             except Exception as e:
-                self.textBrowser.append(f"<span style='color: red;'>{str(e)}</span>")
+                self.textBrowser.append(f"<div style='color: red;'>{e}</div>")
         else:
-            self.runCommand(cmd)
+            if self.currentThread and self.currentThread.isRunning():
+                self.processThread.terminate()
+                self.currentThread.quit()
+                self.currentThread.wait()
 
-    def runCommand(self, cmd):
-        self.thread = QThread()
-        self.commandRunner = CommandRunner(cmd, self.workingDir)
-        self.commandRunner.moveToThread(self.thread)
+            self.processThread = ProcessThread(cmd, self.workingDir)
+            self.currentThread = QThread()
 
-        self.commandRunner.output.connect(self.onCommandOutput, Qt.QueuedConnection)
-        self.commandRunner.error.connect(self.onCommandError, Qt.QueuedConnection)
-        self.commandRunner.finished.connect(self.onCommandFinished, Qt.QueuedConnection)
-        self.commandRunner.finished.connect(self.thread.quit)
+            # Move processThread to the currentThread
+            self.processThread.moveToThread(self.currentThread)
 
-        self.thread.started.connect(self.commandRunner.run)
-        self.thread.start()
+            # Corrected signal connections
+            self.processThread.output.connect(self.onCommandOutput)
+            self.processThread.error.connect(self.onCommandError)
+            self.processThread.finished.connect(self.onCommandFinished)
+
+            self.currentThread.started.connect(self.processThread.run)
+            self.currentThread.start()
 
     def onCommandOutput(self, output):
-        print(f"Received command output: {output}")
-        html_output = self.converter.convert(output, full=True)
-        self.textBrowser.append(f"{html_output}")
+        html_output = self.converter.convert(output)
+        self.textBrowser.append(html_output)
 
     def onCommandError(self, error):
-        print(f"Received command error: {error}")
-        html_error = self.converter.convert(error, full=False)
-        self.textBrowser.append(f"<p style='color: red;'>{html_error}</p>")
+        html_error = self.converter.convert(error)
+        self.textBrowser.append(f"<div style='color: red;'>{html_error}</div>")
 
     def onCommandFinished(self):
-        self.thread.quit()
-        self.thread.wait()
-        self.thread.deleteLater()
+        if self.currentThread:
+            self.currentThread.quit()
+            self.currentThread.wait()
+            self.currentThread = None
         self.updatePrompt()
 
     def terminateCurrentProcess(self):
-        if hasattr(self, "commandRunner"):
-            self.commandRunner.terminate()
-            self.textBrowser.append("<p style='color: red;'>Command terminated.</p>")
+        if self.processThread and self.currentThread and self.currentThread.isRunning():
+            # Request process termination
+            self.processThread.requestTermination.emit()
+
+            # Optionally, implement a delay or a check to confirm termination
+            # This part is simplified; actual implementation might require checking process status or capturing termination errors
+            QTimer.singleShot(1000, self.checkIfProcessTerminated)  # Check after a delay to give time for termination
+
+        else:
+            self.textBrowser.append("<div style='color: red;'>No running process to terminate.</div>")
+
+    def checkIfProcessTerminated(self):
+        # This is a placeholder function. You would need to implement actual checks here.
+        # For example, check if the port is still in use or if the processThread indicates the process is still running.
+        if not self.processThread or self.processThread.runner.process.state() == QProcess.NotRunning:
+            self.textBrowser.append("<div style='color: green;'>Process terminated successfully.</div>")
+
+        else:
+            self.textBrowser.append(
+                "<div style='color: red;'>Process failed to terminate properly. The address might still be in use.</div>")
+        self.updatePrompt()
+
     def updatePrompt(self):
-        self.textBrowser.append(f"<p style='color: pink;'>{os.getcwd()}<span style='color: white;'>$</span></p>")
+        self.textBrowser.append(f"<div style='color: pink;'>{self.workingDir}$ </div>")
