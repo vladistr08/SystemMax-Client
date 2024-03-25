@@ -4,6 +4,7 @@ from PySide6.QtCore import QProcess, QObject, Signal
 class CommandRunner(QObject):
     output = Signal(str)
     error = Signal(str)
+    error2 = Signal(str)
     finished = Signal()
 
     def __init__(self, command, cwd):
@@ -16,11 +17,18 @@ class CommandRunner(QObject):
 
         self.process.readyReadStandardOutput.connect(self.handleStandardOutput)
         self.process.readyReadStandardError.connect(self.handleStandardError)
+        self.process.errorOccurred.connect(self.handleErrorOccurred)
         self.process.finished.connect(self.handleFinished)
 
     def run(self):
         commandParts = self.command.split(" ")
         self.process.start(commandParts[0], commandParts[1:])
+
+    def handleErrorOccurred(self, error):
+        if error == QProcess.FailedToStart:
+            self.error2.emit(f"Command not found: {self.command}")
+        else:
+            self.error2.emit(f"Process error occurred: {error}")
 
     def handleStandardOutput(self):
         data = self.process.readAllStandardOutput().data().decode()
@@ -31,7 +39,7 @@ class CommandRunner(QObject):
         if data:
             self.error.emit(data)
 
-    def handleFinished(self):
+    def handleFinished(self, exitCode, exitStatus):
         self.finished.emit()
         self.cleanup()
 

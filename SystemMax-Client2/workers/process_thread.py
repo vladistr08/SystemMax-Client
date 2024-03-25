@@ -19,6 +19,7 @@ class ProcessThread(QObject):
         self.runner = CommandRunner(self.command, self.cwd)
         self.runner.output.connect(self.handleOutput)
         self.runner.error.connect(self.handleError)
+        self.runner.error2.connect(self.handleError)
         self.runner.finished.connect(self.cleanup)
         self.runner.run()
 
