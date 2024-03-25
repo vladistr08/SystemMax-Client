@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame,
                                QPushButton, QInputDialog, QSizePolicy, QSpacerItem, QScrollArea, QLineEdit, QMessageBox)
 from PySide6.QtCore import Signal, Qt
@@ -24,7 +26,7 @@ class ChatSearchWidget(QWidget):
 
         # Create a scroll area for the chat cards
         self.scrollArea = QScrollArea(self)
-        self.scrollArea.setStyleSheet("background-color: #070F2B")
+        self.scrollArea.setStyleSheet("background-color: #222831;border-radius: 10px;")
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Disable horizontal scroll
 
@@ -55,7 +57,7 @@ class ChatSearchWidget(QWidget):
     def addChatCard(self, chat, layout):
         frame = QFrame()
         frame.setFrameShape(QFrame.StyledPanel)
-        frame.setStyleSheet("background-color: #222831;")
+        frame.setStyleSheet("background-color: #333;")
         frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         frame.setMinimumHeight(60)  # Adjust this value as needed
 
@@ -76,10 +78,10 @@ class ChatSearchWidget(QWidget):
         chatNameEdit.editingFinished.connect(
             lambda: self.onChatNameEditFinished(chat["chatId"], chatNameEdit))
 
-        deleteButton = QPushButton("Delete")
+        deleteButton = QPushButton("X")
         deleteButton.setStyleSheet("color: white; background-color: #A0153E;border-style: "
                                    "outset;border-width: 1px;border-radius: 10px; margin: 4px; padding: 5px; "
-                                   " height: 2em; font: 300 12pt \"Fira Code\";")
+                                   " height: 1.5em; width: 1.5em; font: 300 12pt \"Fira Code\";")
         deleteButton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         deleteButton.setMaximumWidth(70)
         deleteButton.clicked.connect(lambda: self.onDeleteButtonClicked(chat["chatId"]))
@@ -92,7 +94,10 @@ class ChatSearchWidget(QWidget):
         # Add the topLayout to the mainFrameLayout
         mainFrameLayout.addLayout(topLayout)
 
-        timestampLabel = QLabel(chat["createdAt"])
+        datetime_obj = datetime.fromisoformat(chat["createdAt"].replace("Z", "+00:00"))
+        formatted_date = datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+
+        timestampLabel = QLabel(formatted_date)
         timestampLabel.setStyleSheet("color: #A0153E; font-size: 14px;font: 300 14pt \"Fira Code\";")
         timestampLabel.setAlignment(Qt.AlignCenter)  # Align the label in the center
         timestampLabel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
