@@ -1,5 +1,5 @@
 import os
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QCompleter
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QCompleter, QSizePolicy
 from PySide6.QtCore import Qt, QThread, Signal, QObject, QProcess, QTimer
 from components.command_line_edit import CommandLineEdit
 from ansi2html import Ansi2HTMLConverter
@@ -23,11 +23,16 @@ class TerminalWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.userCommands = ['']
         self.converter = Ansi2HTMLConverter(inline=True)
         self.lineEdit = CommandLineEdit(self)
         self.lineEdit.ctrlCPressed.connect(self.terminateCurrentProcess)
         self.textBrowser = QTextBrowser(self)
         self.layout = QVBoxLayout(self)
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(1, 0, 1, 0)
+        self.userCommandsIndex = 0
+
         self.workingDir = os.getcwd()
         self.initUI()
         self.processThread = None
@@ -35,10 +40,13 @@ class TerminalWidget(QWidget):
 
     def initUI(self):
         self.textBrowser.setStyleSheet("background-color: #222831; font: 300 14pt 'Fira Code'; color: white;")
-        self.lineEdit.setStyleSheet("background-color: #333; color: white;")
+        self.lineEdit.setStyleSheet("background-color: #333; color: white; margin-top: 0;")
+
         self.layout.addWidget(self.textBrowser)
         self.layout.addWidget(self.lineEdit)
         self.lineEdit.returnPressed.connect(self.onReturnPressed)
+        self.lineEdit.upArrowPressed.connect(self.onUpArrowPressed)
+        self.lineEdit.downArrowPressed.connect(self.onDownArrowPressed)
 
         completer = QCompleter(self.commands, self)
         completer.setCompletionMode(QCompleter.PopupCompletion)
@@ -50,6 +58,8 @@ class TerminalWidget(QWidget):
     def onReturnPressed(self):
         cmd = self.lineEdit.text().strip()
         self.lineEdit.clear()
+
+        self.userCommands.append(cmd)
 
         if cmd == "clear":
             self.textBrowser.clear()
@@ -80,6 +90,18 @@ class TerminalWidget(QWidget):
 
             self.currentThread.started.connect(self.processThread.run)
             self.currentThread.start()
+
+    def onUpArrowPressed(self):
+        if len(self.userCommands) == 1 or self.userCommandsIndex == len(self.userCommands) - 1:
+            return
+        self.userCommandsIndex += 1
+        self.lineEdit.setText(self.userCommands[-self.userCommandsIndex])
+
+    def onDownArrowPressed(self):
+        if len(self.userCommands) == 1 or self.userCommandsIndex == 0:
+            return
+        self.userCommandsIndex -= 1
+        self.lineEdit.setText(self.userCommands[-self.userCommandsIndex])
 
     def onCommandOutput(self, output):
         html_output = self.converter.convert(output)

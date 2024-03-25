@@ -6,20 +6,28 @@ class CommandLineEdit(QLineEdit):
     tabPressed = Signal()
     rightArrowPressed = Signal()
     ctrlCPressed = Signal()
+    upArrowPressed = Signal()
+    downArrowPressed = Signal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def keyPressEvent(self, event):
+        # NOT WORKING
         if event.key() == Qt.Key_C and (event.modifiers() & Qt.ControlModifier):
             self.ctrlCPressed.emit()
+        elif event.key() == Qt.Key_Up:
+            self.upArrowPressed.emit()
         elif event.key() == Qt.Key_Right:
             # Emit signal or directly call a method to handle right arrow press
             self.rightArrowPressed.emit()
+        elif event.key() == Qt.Key_Down:
+            self.downArrowPressed.emit()
         elif event.key() == Qt.Key_Tab:
             # Prevent the default focus traversal behavior
             event.accept()
             # Emit a signal or call a method to handle tab completion
+
             self.tabPressed.emit()
         else:
             super().keyPressEvent(event)
