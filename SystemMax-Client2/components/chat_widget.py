@@ -1,10 +1,12 @@
 from PySide6.QtGui import QTextOption
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QPushButton,
                                QScrollArea, QLabel, QLineEdit, QMessageBox, QSizePolicy)
-from PySide6.QtCore import Slot, Qt, Signal
+from PySide6.QtCore import Slot, Qt, Signal, QThread
 from enviorment.env import ENV
 from api.graphql_client import GraphQLClient
 from typing import List, Dict
+from workers.chat_worker import ChatWorker
+import re
 
 
 class ChatWidget(QWidget):
@@ -105,15 +107,16 @@ class ChatWidget(QWidget):
 
         context = self.prepare_context()
 
-        chatgpt_response = self.get_chatgpt_response(user_message, context)
-        self.add_message_to_display("Assistant: " + chatgpt_response)
-
+        self.get_chatgpt_response(user_message, context)
 
     def add_message_to_display(self, message):
         label, _, text = message.partition(": ")
 
         # Determine the message label color based on the sender
         label_html = f"<span style='color: #720455;'>{label}:</span>" if label == "Assistant" else f"<span style='color: green;font: 300 14pt \"Fira Code\";'>{label}:</span>"
+
+        # Convert markdown-like syntax to HTML
+        text = self.convert_markdown_to_html(text)
 
         # Prepare the full message with HTML for styling
         full_message = f"{label_html} {text}"
@@ -128,7 +131,7 @@ class ChatWidget(QWidget):
         message_text_edit.setTextInteractionFlags(Qt.TextSelectableByMouse)
         message_text_edit.setFocusPolicy(Qt.NoFocus)
 
-        # Set the size policy to prevent the QTextEdit from expanding beyond the size of its content
+        # Set the size policy and adjust size
         size_policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         size_policy.setHeightForWidth(True)
         message_text_edit.setSizePolicy(size_policy)
@@ -136,20 +139,66 @@ class ChatWidget(QWidget):
         # Update the size of the QTextEdit to fit the content
         message_text_edit.document().adjustSize()
         new_height = message_text_edit.document().size().height()
-        message_text_edit.setFixedHeight(new_height + 10)  # Add a little extra height for padding
+        message_text_edit.setFixedHeight(new_height + 10)
 
         self.chatDisplayLayout.addWidget(message_text_edit)
 
         # Scroll to the bottom to show the latest message
         self.chatDisplayArea.verticalScrollBar().setValue(self.chatDisplayArea.verticalScrollBar().maximum())
 
-    def get_chatgpt_response(self, user_message, context) -> str:
-        data, errors = self.graphQLClient.getAssistantResponse(user_message, chatId=self.chatId, context=context, token=self.env.token)
-        if errors:
-            QMessageBox.critical(self, "Error", f"An error occurred: {errors}")
-            return f"An error occurred: {errors}"
-        else:
-            return data['getAssistantResponse']['message']
+    def convert_markdown_to_html(self, text):
+        # Headers
+        for i in range(6, 0, -1):
+            text = re.sub(r'^' + '#' * i + r'\s*(.+)$', r'<h' + str(i) + r'>\1</h' + str(i) + r'>', text,
+                          flags=re.MULTILINE)
+
+        # Convert code blocks
+        text = re.sub(r'```(.*?)```', r'<pre><em><code style="color: pink;">\1</code></em></pre>', text,
+                      flags=re.DOTALL)
+
+        # Italic text
+        text = re.sub(r'\`(.*?)\`', r'<em>\1</em>', text)
+
+
+        # Convert links
+        text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+
+        # Convert bold text
+        text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+
+        # Convert line breaks
+        text = text.replace('\n', '<br>')
+
+        return text
+
+    def get_chatgpt_response(self, user_message, context):
+        # Create the QThread object
+        self.thread = QThread()
+        # Create a worker object
+        self.worker = ChatWorker(user_message, self.chatId, context, self.graphQLClient, self.env)
+        # Move the worker to the thread
+        self.worker.moveToThread(self.thread)
+
+        # Connect signals
+        self.worker.finished.connect(self.on_response_ready)
+        self.worker.error.connect(self.on_error)
+        self.thread.started.connect(self.worker.run)
+
+        # Clean up
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.error.connect(self.thread.quit)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+        # Start the thread
+        self.thread.start()
+
+    @Slot(str)
+    def on_response_ready(self, response):
+        self.add_message_to_display("Assistant: " + response)
+
+    @Slot(str)
+    def on_error(self, error_message):
+        QMessageBox.critical(self, "Error", error_message)
 
     @Slot()
     def on_back_clicked(self):
