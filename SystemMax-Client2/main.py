@@ -1,4 +1,6 @@
 import sys
+
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox
 from LoginForm import LoginWindow
 from MainWindow import MainWindow
@@ -7,6 +9,8 @@ from enviorment.env import ENV
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setApplicationName("SystemMax")
+    app.setWindowIcon(QIcon("/Users/istra/Programare/SystemMax/SystemMax-Client/SystemMax-Client2/res/logo-removebg.png"))
 
     env = ENV()
 

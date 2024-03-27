@@ -6,6 +6,7 @@ from api.graphql_client import GraphQLClient
 class RegisterWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(RegisterWindow, self).__init__(parent)
+        self.setWindowTitle("Register")
         self.setupUi(self)
         self.registerButton.clicked.connect(self.on_register_clicked)
         self.goToLoginButton.clicked.connect(self.switch_to_login)

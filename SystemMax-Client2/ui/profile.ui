@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Profile</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: #122839;</string>
@@ -163,7 +163,7 @@ background-color: #070F2B;</string>
      <x>0</x>
      <y>0</y>
      <width>909</width>
-     <height>37</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

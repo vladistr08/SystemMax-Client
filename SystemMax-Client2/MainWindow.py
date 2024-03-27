@@ -14,6 +14,7 @@ from api.graphql_client import GraphQLClient
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Workspace")
         self.chatWidget = None
         self.profile_window = None
         self.login_window = None

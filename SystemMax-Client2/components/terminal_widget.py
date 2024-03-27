@@ -26,7 +26,6 @@ class TerminalWidget(QWidget):
         self.userCommands = ['']
         self.converter = Ansi2HTMLConverter(inline=True)
         self.lineEdit = CommandLineEdit(self)
-        self.lineEdit.ctrlCPressed.connect(self.terminateCurrentProcess)
         self.textBrowser = QTextBrowser(self)
         self.layout = QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -80,10 +79,8 @@ class TerminalWidget(QWidget):
             self.processThread = ProcessThread(cmd, self.workingDir)
             self.currentThread = QThread()
 
-            # Move processThread to the currentThread
             self.processThread.moveToThread(self.currentThread)
 
-            # Corrected signal connections
             self.processThread.output.connect(self.onCommandOutput)
             self.processThread.error.connect(self.onCommandError)
             self.processThread.finished.connect(self.onCommandFinished)
@@ -120,19 +117,14 @@ class TerminalWidget(QWidget):
 
     def terminateCurrentProcess(self):
         if self.processThread and self.currentThread and self.currentThread.isRunning():
-            # Request process termination
             self.processThread.requestTermination.emit()
 
-            # Optionally, implement a delay or a check to confirm termination
-            # This part is simplified; actual implementation might require checking process status or capturing termination errors
             QTimer.singleShot(1000, self.checkIfProcessTerminated)  # Check after a delay to give time for termination
 
         else:
             self.textBrowser.append("<div style='color: red;'>No running process to terminate.</div>")
 
     def checkIfProcessTerminated(self):
-        # This is a placeholder function. You would need to implement actual checks here.
-        # For example, check if the port is still in use or if the processThread indicates the process is still running.
         if not self.processThread or self.processThread.runner.process.state() == QProcess.NotRunning:
             self.textBrowser.append("<div style='color: green;'>Process terminated successfully.</div>")
 

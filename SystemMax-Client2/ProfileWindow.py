@@ -6,6 +6,7 @@ from enviorment.env import ENV
 class ProfileWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ProfileWindow, self).__init__(parent)
+        self.setWindowTitle("User Profile")
         self.setupUi(self)
         self.graphQLClient = GraphQLClient()
         self.env = ENV()

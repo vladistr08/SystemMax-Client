@@ -75,7 +75,7 @@ class Ui_MainWindow(object):
         self.menuBar = QMenuBar(MainWindow)
         self.menuBar.setObjectName(u"menuBar")
         self.menuBar.setEnabled(True)
-        self.menuBar.setGeometry(QRect(0, 0, 1434, 37))
+        self.menuBar.setGeometry(QRect(0, 0, 1434, 24))
         self.menuLogout = QMenu(self.menuBar)
         self.menuLogout.setObjectName(u"menuLogout")
         self.menuProfile = QMenu(self.menuBar)
@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Workspace", None))
         self.actionLogout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
         self.actionView.setText(QCoreApplication.translate("MainWindow", u"View", None))
         self.actionStop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))

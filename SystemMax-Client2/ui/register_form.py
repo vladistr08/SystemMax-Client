@@ -87,7 +87,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 37))
+        self.menubar.setGeometry(QRect(0, 0, 800, 24))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -99,7 +99,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Register", None))
         self.registerButton.setText(QCoreApplication.translate("MainWindow", u"Register", None))
         self.goToLoginButton.setText(QCoreApplication.translate("MainWindow", u"Back to Login", None))
         self.passwordLineEdit.setInputMask("")
